@@ -35,6 +35,16 @@ index 421bef9..a376ebb 100644
  
  endmenu
  
+diff --git a/block/Makefile b/block/Makefile
+index 421bef9..a376ebb 100644
+--- a/block/Makefile
++++ b/block/Makefile
+@@ -20,3 +20,5 @@ obj-$(CONFIG_IOSCHED_CFQ)	+= cfq-iosched.o
+ obj-$(CONFIG_BLOCK_COMPAT)	+= compat_ioctl.o
+ obj-$(CONFIG_BLK_DEV_INTEGRITY)	+= blk-integrity.o
+ obj-$(CONFIG_BLK_CMDLINE_PARSER)	+= cmdline-parser.o
++
++obj-$(CONFIG_IOSCHED_LOOK)	+= look-iosched.o
 diff --git a/block/look-iosched.c b/block/look-iosched.c
 index e69de29..554be53 100644
 --- a/block/look-iosched.c
