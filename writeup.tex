@@ -15,6 +15,7 @@
 	\usepackage[TABBOTCAP, tight]{subfig}
 	\usepackage{enumitem}
 	\usepackage{titling}
+	\usepackage{listings}
 	
 	\usepackage[margin=2cm]{geometry}
 	
@@ -75,7 +76,27 @@
 	We learned what an actual implementation in the kernel is like, and not just listening to lectures. The building of the kernel, and the settings to modify that, the creation of the patch file, etc. There are lots of things that we learned as auxillary from doing this assignment.
 
 	\subsection{Evaluation}
-	Testing the solution to the IO scheduler, the script from above can be used. It should be able to flood IO requests. Otherwise, the code in qemu/look-iosched.c have some comments of what changed.
+	First copy the look-iosched.c and Kconfig.iosched into the linux-yocto/block/ directory. Once sourcing the appropriate file at /scratch/files/environment-setup-i586-poky-linux, the kernel can be built, using 
+	\begin{verbatim}
+		make -j4 all
+	\end{verbatim}
+	Run the emulator with the following:
+	\begin{lstlisting}
+		qemu-system-i386 -gdb tcp::5520 -S -nographic -kernel 
+		arch/x86/boot/bzImage -drive file=core-image-lsb-sdk-qemux86.ext4 
+		-enable-kvm -net none -usb -localtime --no-reboot --append 
+		"root=/dev/hda rw console=ttyS0 debug"
+	\end{lstlisting}
+	Specifically, we changed the -kernel image to the one we built, and the "root=/dev/vda" is changed to "root=/dev/hda".
+	Confirm that the look scheduler is being used, 
+	\begin{verbatim}
+		cat /sys/block/hdc/queue/scheduler
+	\end{verbatim}
+	If not, run this to switch to it:
+	\begin{verbatim}
+		echo 'look' > /sys/block/hdc/queue/scheduler
+	\end{verbatim}
+	Testing the  IO scheduler, the script from the Testing section can be used. It should be able to flood IO requests. Otherwise, the code in qemu/look-iosched.c have some comments of what changed.
 	Testing the Dining Philosophers problem can be done by letting it run for a long time, or changing the sleep() calls to be usleep() calls. The program should run indefinitely and not run into a deadlock problem.
 	
 	
