@@ -1,0 +1,82 @@
+\documentclass[letterpaper,10pt]{article}
+
+	\usepackage{graphicx}                                        
+	\usepackage{amssymb}                                         
+	\usepackage{amsmath}                                         
+	\usepackage{amsthm}                                          
+	
+	\usepackage{alltt}                                           
+	\usepackage{float}
+	\usepackage{color}
+	\usepackage{url}
+	
+	\usepackage{balance}
+	%\usepackage[TABBOTCAP, tight]{subfigure}
+	\usepackage[TABBOTCAP, tight]{subfig}
+	\usepackage{enumitem}
+	\usepackage{titling}
+	
+	\usepackage[margin=2cm]{geometry}
+	
+	\newcommand{\cred}[1]{{\color{red}#1}}
+	\newcommand{\cblue}[1]{{\color{blue}#1}}
+	
+	\newcommand{\toc}{\tableofcontents}
+	
+	\parindent = 0.0 in
+	\parskip = 0.1 in
+	
+	\title{CS 444 - Assignment 2}
+	\author{Alex Edwards, Jacob Dugan}
+	\date{\today}
+	
+	\begin{document}
+	\maketitle
+	\section*{Abstract}
+	Assignment 2 contains the implementation of a LOOK scheduler using the shortest-seek-time-first (SSTF) algorithm, and the patch file that configures the QEMU installation. The assignment also contains an implementation of the Dining Philosophers consurrency problem designed to illustrate how to prevent deadlock. This implementation is written in C and uses pthreads.
+	
+	\section{LOOK Design}
+	The LOOK scheduler design uses the SSTF algorithm and works differently than the no-op scheduler Already found in the linux installation in two ways: the adding of requests and dispatching of requests. When adding a new request to the queue, the algorithm sorts it using insertion sort, iterating until it finds the appropriate place to insert said entry. The sorting algorithm respects the position of the request compared to the current current position in one direction. This way, when the scheduler looks to dispatch requests, it simply takes the end of the list and it is guaranteed to be the closest.
+	
+	\section{Version Control Log}
+	
+	\section{Work Log}
+	\begin{tabular}{l l}
+		21 October & Most of the Dining Philosophers code is written. \\
+		22 October & Completed the Dining Philosophers code, fixing deadlock issue.\\
+		27 October & LOOK scheduler written \\
+		27 October & Patch file generated \\
+	\end{tabular}
+	
+	\section{Questions}
+	\subsection{Purpose}
+	One of the purposes of this assignment is to get familiar with the kernel and writing code within the kernel. In the kernel, we have access to different functions and more constraints on time, and can dangerously modify memory. Other purposes include understanding the QEMU launch options, how IO schedulers work in the actual code (as we had to read and understand the no-op scheduler), and for the dining philosophers part, understanding how to avoid deadlocks.
+	
+	\subsection{Approach}
+	Our approach involved first understanding the no-op scheduler and understanding how it worked. We knew what this algorithm must do on a high level. It must keep a sorted list at all times and just go in that order, because the other approach, which is to simply append the request and sort it at every dispatch, would be unnecessary and too many sorts. The other method would be to not sort at all, hold a "state" variable that had the direction and position of the needle (position of IO access), and iterate and choose the closest every dispatch. By moving the sort to adding requests and using insertion sort, we should have faster performance for random read/writes. Contiguous read-writes would by fastest in no-op, because sorting takes time.
+	For the Dining Philosophers problem, there could be a problem of deadlock if all the philosophers reached for the first fork simultaneously. So, we force one of the philosophers, in this case the last one, to grab it in reverse order. If we run through all possible cases, at worst case, we will have at least 1 philosopher eating if they are all hungry.
+	
+	\subsection{Testing}
+	To test the solution to the IO scheduling, we must overload or spam the IO scheduler with read/write requests. To do this, in the launched VM running our scheduler, we create a script that does many read/writes, such as in bash:
+	\begin{verbatim}
+		#!/bin/bash
+		c=1
+		while : 
+		do
+			echo "$c" > $c.txt
+			cat $c.txt > /dev/null
+			rm -f $c.txt
+			c=$((c+1))
+		done
+	\end{verbatim}
+	To test the dining philosophers solution, we changed the sleep() calls to be usleep() calls and simply waited about 10 mins to ensure that the program did not halt. While it could still end up halting and we got lucky, that is rather unlikely.
+	
+	\subsection{Learned}
+	We learned what an actual implementation in the kernel is like, and not just listening to lectures. The building of the kernel, and the settings to modify that, the creation of the patch file, etc. There are lots of things that we learned as auxillary from doing this assignment.
+
+	\subsection{Evaluation}
+	Testing the solution to the IO scheduler, the script from above can be used. It should be able to flood IO requests. Otherwise, the code in qemu/look-iosched.c have some comments of what changed.
+	Testing the Dining Philosophers problem can be done by letting it run for a long time, or changing the sleep() calls to be usleep() calls. The program should run indefinitely and not run into a deadlock problem.
+	
+	
+	\end{document}
