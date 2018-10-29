@@ -16,6 +16,7 @@
 	\usepackage{enumitem}
 	\usepackage{titling}
 	\usepackage{listings}
+	\usepackage{longtable}
 	
 	\usepackage[margin=2cm]{geometry}
 	
@@ -40,6 +41,42 @@
 	The LOOK scheduler design uses the SSTF algorithm and works differently than the no-op scheduler Already found in the linux installation in two ways: the adding of requests and dispatching of requests. When adding a new request to the queue, the algorithm sorts it using insertion sort, iterating until it finds the appropriate place to insert said entry. The sorting algorithm respects the position of the request compared to the current current position in one direction. This way, when the scheduler looks to dispatch requests, it simply takes the end of the list and it is guaranteed to be the closest.
 	
 	\section{Version Control Log}
+
+	\begin{tabular}{lp{12cm}}
+		\label{tabular:legend:git-log}
+		\textbf{acronym} & \textbf{meaning} \\
+		V & \texttt{version} \\
+		tag & \texttt{git tag} \\
+		MF & Number of \texttt{modified files}. \\
+		AL & Number of \texttt{added lines}. \\
+		DL & Number of \texttt{deleted lines}. \\
+	\end{tabular}
+		
+	\bigskip
+	
+	\begin{longtable}{|rlllrrr|}
+	\hline \multicolumn{1}{|c}{\textbf{V}} & \multicolumn{1}{c}{\textbf{tag}}
+	& \multicolumn{1}{c}{\textbf{date}}
+	& \multicolumn{1}{c}{\textbf{commit message}} & \multicolumn{1}{c}{\textbf{MF}}
+	& \multicolumn{1}{c}{\textbf{AL}} & \multicolumn{1}{c|}{\textbf{DL}} \\ \hline
+	\endhead
+	
+	\hline  \\ \hline
+	\endfoot
+	
+	\hline% \hline
+	\endlastfoot
+	
+	\hline 1 &  & 2018-10-21 & initial commit & 5 & 384 & 0 \\
+	\hline 2 &  & 2018-10-27 & files that were changed for Look I/O & 2 & 228 & 0 \\
+	\hline 3 &  & 2018-10-27 & added the patch file & 1 & 190 & 0 \\
+	\hline 4 &  & 2018-10-27 & fixed deadlock issue & 1 & 15 & 2 \\
+	\hline 5 &  & 2018-10-27 & Added stuff about qemu assignment & 1 & 0 & 48 \\
+	\hline 6 &  & 2018-10-28 & wrote writeup & 1 & 82 & 0 \\
+	\hline 7 &  & 2018-10-28 & Fixed some pointer errors & 1 & 6 & 6 \\
+	\hline 8 &  & 2018-10-28 & updated writeup & 1 & 22 & 1 \\
+	\hline 9 &  & 2018-10-28 & added Makefile & 2 & 36 & 0 \\
+	\end{longtable}
 	
 	\section{Work Log}
 	\begin{tabular}{l l}
