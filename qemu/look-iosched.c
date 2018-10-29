@@ -38,7 +38,7 @@ static int look_dispatch(struct request_queue *q, int force)
 static void look_add_request(struct request_queue *q, struct request *rq)
 {
 	struct look_data *nd = q->elevator->elevator_data;
-	struct list_head *current;
+	struct list_head *current_pos;
 	struct list_head *tmp;
 	struct request *current_node;
 	
@@ -49,11 +49,11 @@ static void look_add_request(struct request_queue *q, struct request *rq)
 	}
 	
 	else {
-		list_for_each_safe(current, tmp, &np->queue){
-			current_node = list_entry(current, struct request, queuelist);
+		list_for_each_safe(current_pos, tmp, &nd->queue){
+			current_node = list_entry(current_pos, struct request, queuelist);
 		
-			if(blk_rq_pos(current) < blk_rq_pos(rq)){
-				list_add(&rq->queuelist, &current->queuelist);
+			if(blk_rq_pos(current_node) < blk_rq_pos(rq)){
+				list_add(&rq->queuelist, &current_node->queuelist);
 				break;
 			}
 
@@ -143,6 +143,6 @@ module_init(look_init);
 module_exit(look_exit);
 
 
-MODULE_AUTHOR("1337 code gang XXX420XXX");
+MODULE_AUTHOR("Group 20 Fall 2018");
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Lo-ok IO scheduler");
